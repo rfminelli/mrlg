@@ -1,0 +1,64 @@
+*** /home/ftp/looking-glass/CURRENT/archive-contents/index.cgi	2005-01-21 22:10:45.000000000 -0500
+--- ./index.cgi	2005-01-30 21:50:30.000000000 -0500
+*************** no warnings "once";
+*** 8,10 ****
+  
+! $::Version='5.1.1 (IPv6+SSH)';
+  
+--- 8,10 ----
+  
+! $::Version='5.2.0 Beta (IPv6+SSH)';
+  
+*************** print "
+*** 206,210 ****
+  <font color=blue face=arial size=3>
+! $::mrlghost - Looking Glass</font><br>
+  <font color=blue face=arial size=2>
+! A service of $::company.</font><br>
+  <font color=red face=arial size=1>
+--- 206,211 ----
+  <font color=blue face=arial size=3>
+! $::mrlghost - Multi-Router Looking Glass (MRLG)</font><br>
+  <font color=blue face=arial size=2>
+! Running MRLG Version $::Version</font></br>
+! A service of $::company.<br>
+  <font color=red face=arial size=1>
+*************** sub traceroute
+*** 802,804 ****
+  
+! 	if ( $::Form{'arg'} =~ /^(([0-9a-zA-Z-\.]+)\.([0-9a-zA-Z-\.]+))$/ ) 
+  		{ 
+--- 803,805 ----
+  
+! 	if ( $::Form{'arg'} =~ /^(([0-9a-zA-Z-\.]+)([\:\.]+)([\:0-9a-zA-Z-\.]+))$/ )
+  		{ 
+*************** sub ping
+*** 864,866 ****
+  
+! 	if ( $::Form{'arg'} =~ /^(([0-9a-zA-Z-\.]+)\.([0-9a-zA-Z-\.]+))$/ )
+  	{ 
+--- 865,867 ----
+  
+! 	if ( $::Form{'arg'} =~ /^(([0-9a-zA-Z-\.]+)([\:\.]+)([\:0-9a-zA-Z-\.]+))$/ )
+  	{ 
+*************** sub execute_command
+*** 968,970 ****
+  {
+! my ($cmd, $port) = @_;
+  print "Executing command = $cmd";
+--- 969,983 ----
+  {
+! my  ($cmd, $port) = @_;
+! 
+! if ($::log_queries eq '1')
+! 	{
+! 	my ($time);
+! 	$time = localtime;
+! 	open (LOGFILE,">>$::mrlglog");
+! 	print LOGFILE $time, " - ", $ENV{'REMOTE_ADDR'}, ": (", $::Form{'router'}, ") ", $cmd, " \n";
+! 	close LOGFILE;
+! 	}
+! 
+! 
+! 
+  print "Executing command = $cmd";

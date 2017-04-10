@@ -1,0 +1,141 @@
+
+Multi-Router Looking Glass Version 5.5.0 
+Sat Sep 27 03:16:28 UTC 2014
+
+Multi-Router Looking Glass allows network administrators to execute 
+commands on multiple routers via a nice web interface.
+
+Changes for 5.5.0
+Removed fastping.c - See CVE-2014-3931 at 
+http://www.s3.eurecom.fr/cve/CVE-2014-3931.txt
+Removed fping1
+Replaced fping1 and fastping.c with fastping2.sh (bash shell script)
+
+Changes for 5.4.1
+
+Security fix to trap for Cisco crash attempts using specially crafted regexp.
+
+Changes for 5.2.0
+
+* Bug fix in argument parsing to allow IPv6 address notation in ping and 
+traceroute queries.
+
+* Added the ability to log remote queries. (Didn't you always want to 
+know how your looking-glass was being used?)
+
+
+Changes for version 5.1.1
+
+* Updated GNU License information.
+
+* Corrected a few spelling typos.
+
+* Created patch files from 4.3.0 -> 5.1.1 and 5.0.0 -> 5.1.1
+
+Changes for version 5.1.0
+
+* Implemented Net::SSH::Perl routines to allow SSH access to routers.
+
+* Added debug routines to code to aid in debugging config file when 
+adding a new router.
+
+* Changed code to set $login_user to 'no_login_user_defined' if 
+'login_user' is not set in config file. *Change required by SSH 
+routines.
+
+* Changed code to set $login_pass to 'no_login_pass_defined' if 
+'login_pass' is not set in config file. *Change required by SSH 
+routines.
+
+* Cleaned up code to allow easier modification/debugging.
+
+* Added 'use_ssh' config parameter to config file to tell MRLG to use SSH.
+
+* Added 'use_port' config parameter to config file to tell MRLG to use a 
+specific port for all connections to a specific router.
+
+* Added 'debug' config parameter to config file to tell MRLG to output 
+debug information for a specific router.
+
+* Added $::writable_directory config parameter to config file to tell 
+MRLG where to store the known_hosts file that is created by 
+Net::SSH::Perl when an SSH connection is used.
+
+
+Changes for version 5.0.0
+
+* Integrated patch supplied by Jeff Barrow to support username/password 
+authentication for devices that require a username to log in.
+
+* Upgraded code to use Net::Telnet::Cisco.
+
+* Added a few <!-- --> tags for Google-bait so I can look and see how 
+many people are running my code. ;)
+  Please leave these in place.  I get a kick out of seeing all of the different networks that use this code.
+
+* More features coming soon - IE; SSH support!
+
+
+SECURITY UPDATE in version 4.3.0
+
+Removed the ability of remote users to specify "nei" or any other 
+variation of "neighbors" as an ARG to the "sh ip bgp" command.
+
+
+* = NEW feature in version 4.2.1
+
+Available commands:
+
+  show ip bgp [ARG]
+  show ip bgp summary
+  show ip bgp ipv4 multicast [ARG]
+  show ip bgp ipv4 multicast summary
+  show ip ospf [ARG]
+* show ip rip [ARG: database (on cisco)]
+* show ip protocols
+  show ip route [ARG]
+  show interface [ARG]
+  show version
+  trace [ip address or FQDN]
+  ping [ip address or FQDN]
+
+* Security Option:
+
+You can assign unique password for each router.  Users of the MRLG must 
+then enter the proper password to access that router via the MRLG.
+
+* Seperate config file: 
+Version 4.2.1 implements mrlg.conf which contains all router access 
+information.  This file is placed outside of your webserver root for 
+higher security. ************ Many thanks to Stephane Bortzmeyer for 
+modifying the MRLG to support a config file! ************
+
+
+MRLG is modular.  Administrators can add or remove commands from the 
+MRLG to fit their individual needs.
+
+
+Tested with:
+
+Cisco 11.1(28)CC
+Zebra (0.88 and above) 
+Quagga (all versions since fork from Zebra)
+
+As always, the latest version of the MRLG can be downloaded from
+http://mrlg.op-sec.us/
+
+
+If you use MRLG, please let me know and preferrably, provide me a link 
+to your looking-glass in an email to mrlg@op-sec.us.
+
+
+If you would like to show your appreciation for MRLG, you can do so by 
+sending a donation via Paypal to mrlg@op-sec.us.
+
+https://www.paypal.com/affil/pal=mrlg%40op-sec.us
+
+
+---
+John Fraizer
+OP-SEC.US
+

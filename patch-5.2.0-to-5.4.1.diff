@@ -1,0 +1,225 @@
+*** index.cgi	2007-08-30 20:03:49.000000000 +0000
+--- index.cgi-5.4.1	2007-08-30 20:04:19.000000000 +0000
+***************
+*** 5,27 ****
+  use strict;
+  use warnings;
+  no warnings "once";
+  
+! $::Version='5.2.0 Beta (IPv6+SSH)';
+  
+  ##
+  ## Original Code Release: 27 NOV 2000
+! ## Copyright © 2000 - 2005 John W. Fraizer III <john@ip-guru.com>
+  ## *All* copyright notices must remain in place to use this code.
+  ##
+  ## mrlg.conf modification by Stephane Bortzmeyer <bortzmeyer@gitoyen.net>
+  ##
+  ## The latest version of this code is available at:
+  ##
+! ## ftp://ftp.ip-guru.com/looking-glass/
+! ## or
+! ## ftp://ftp.enterzone.net/looking-glass/
+! ##
+  ##
+  ## This file is part of the Multi-Router Looking Glass (MRLG).
+  ##
+  ## Multi-Router Looking Glass (MRLG) is free software; you can redistribute
+--- 5,24 ----
+  use strict;
+  use warnings;
+  no warnings "once";
+  
+! $::Version='5.4.1 Beta (IPv6+SSH)';
+  
+  ##
+  ## Original Code Release: 27 NOV 2000
+! ## Copyright © 2000 - 2007 John W. Fraizer III <john@op-sec.us>
+  ## *All* copyright notices must remain in place to use this code.
+  ##
+  ## mrlg.conf modification by Stephane Bortzmeyer <bortzmeyer@gitoyen.net>
+  ##
+  ## The latest version of this code is available at:
+  ##
+! ## http://www.op-sec.us/mrlg/source/
+  ##
+  ## This file is part of the Multi-Router Looking Glass (MRLG).
+  ##
+  ## Multi-Router Looking Glass (MRLG) is free software; you can redistribute
+***************
+*** 50,58 ****
+  
+  require 5.002;
+  use POSIX;
+  use Net::Telnet::Cisco;
+! use Net::SSH::Perl;
+  use Net::hostent;
+  use Socket;
+  
+  require '/etc/mrlg.conf';
+--- 47,55 ----
+  
+  require 5.002;
+  use POSIX;
+  use Net::Telnet::Cisco;
+! #use Net::SSH::Perl;
+  use Net::hostent;
+  use Socket;
+  
+  require '/etc/mrlg.conf';
+***************
+*** 192,200 ****
+  <head>
+  ';
+  print "<title>MRLG - $::mrlghost - Multi-Router Looking Glass</title>\n";
+  print "<!-- DO NOT REMOVE: MRLG-version $::Version -->\n";
+! print "<!-- DO NOT REMOVE: Written by and © 2000-2005, John Fraizer - EnterZone, Inc -->\n";
+  
+  print '
+  </head>
+  
+--- 189,197 ----
+  <head>
+  ';
+  print "<title>MRLG - $::mrlghost - Multi-Router Looking Glass</title>\n";
+  print "<!-- DO NOT REMOVE: MRLG-version $::Version -->\n";
+! print "<!-- DO NOT REMOVE: Written by and © 2000-2007, John Fraizer -->\n";
+  
+  print '
+  </head>
+  
+***************
+*** 233,241 ****
+  <font face=arial color=black>
+  ';
+  print "<form METHOD=\"POST\" action=\"$::url\">\n";
+  print "<B>Router:</B>  <SELECT Name=\"router\" Size=1>\n";
+! foreach $router (keys (%::Routers)) 
+  	{
+      	print "<OPTION ";
+      	if ($router eq $::Form{'router'}) 
+  		{
+--- 230,238 ----
+  <font face=arial color=black>
+  ';
+  print "<form METHOD=\"POST\" action=\"$::url\">\n";
+  print "<B>Router:</B>  <SELECT Name=\"router\" Size=1>\n";
+! foreach $router (sort (keys (%::Routers))) 
+  	{
+      	print "<OPTION ";
+      	if ($router eq $::Form{'router'}) 
+  		{
+***************
+*** 380,390 ****
+  <br>
+  ";
+  print "Multi-Router Looking Glass version $::Version<br>\n";
+  print '
+! &copy; 2000-2005, John Fraizer  -
+! <a href="http://www.enterzone.net/">EnterZone, Inc</a><br>
+! Source code: <a href="ftp://ftp.enterzone.net/looking-glass/CURRENT/">ftp://ftp.enterzone.net/looking-glass/CURRENT/</a>
+  <br>
+  </body>
+  </html>
+  ';
+--- 377,387 ----
+  <br>
+  ";
+  print "Multi-Router Looking Glass version $::Version<br>\n";
+  print '
+! &copy; 2000-2007, John Fraizer  -
+! OP-SEC.US<br>
+! Source code: <a href=http://www.op-sec.us/mrlg/source/>http://www.op-sec.us/mrlg/source/</a>.	
+  <br>
+  </body>
+  </html>
+  ';
+***************
+*** 432,439 ****
+--- 429,441 ----
+  		# Get rid of linebreaks.
+  		$name =~ s/\n//g;
+  		$value =~ s/\n//g;
+          
++ 		# Get rid of cisco crash attempts
++ 	        $name =~ s/\(\[0-9\]\*\)\(\_\\1\)\+/ 65535_65535 /g;
++ 	        $value =~ s/\(\[0-9\]\*\)\(\_\\1\)\+/ 65535_65535 /g;
++ 	        $name =~ s/\(\.\*\)\(\\1\)\+/ 65535_65535 /g;
++ 	        $value =~ s/\(\.\*\)\(\\1\)\+/ 65535_65535 /g;
+  
+                  $::Form{$name} = $value ;
+                   
+                  }
+***************
+*** 518,527 ****
+--- 520,532 ----
+  if ($::Form{'query'} eq '16')
+  	{
+  	sh_ip6_route();
+  	}
++ 
+  }
+  
++ 
++ 
+  ############################################################
+  sub sh_ip_bgp
+  ############################################################
+  {
+***************
+*** 560,567 ****
+--- 565,576 ----
+  }
+  }
+  }
+  
++ 
++ 
++ 
++ 
+  ############################################################
+  sub sh_ip_bgp_plus
+  ############################################################
+  {
+***************
+*** 749,757 ****
+  my $command;
+  
+  if ($cisco eq '1')
+  	{
+! 	$command = "sh ip mbgp $::Form{'arg'}"; 
+  	}
+  else
+  	{
+  $command = "show ip bgp ipv4 multicast $::Form{'arg'}";
+--- 758,766 ----
+  my $command;
+  
+  if ($cisco eq '1')
+  	{
+! 	$command = "sh ip bgp ipv4 multicast $::Form{'arg'}"; 
+  	}
+  else
+  	{
+  $command = "show ip bgp ipv4 multicast $::Form{'arg'}";
+***************
+*** 783,791 ****
+  my $command;
+  
+  if ($cisco eq '1')
+          {
+!         $command = "sh ip mbgp summary";
+          }
+  else
+          {
+  $command = "show ip bgp ipv4 multicast summary";
+--- 792,800 ----
+  my $command;
+  
+  if ($cisco eq '1')
+          {
+!         $command = "show ip bgp ipv4 multicast summary";
+          }
+  else
+          {
+  $command = "show ip bgp ipv4 multicast summary";

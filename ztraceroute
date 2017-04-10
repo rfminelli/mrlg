@@ -1,0 +1,95 @@
+#!/usr/bin/perl -w
+
+require 5;
+use Net::Telnet;
+use Socket;
+
+## Settings
+$traceroute = "/usr/bin/traceroute -n";
+$router = "10.1.1.1";
+$port = 2605;
+$pass = "router-password";
+
+# No need to change anything bellow
+
+$| = 1;
+
+sub errMsg($){
+	print "$_\n";
+}
+
+sub getasnum($){
+	$address = $_[0];
+
+	$t = new Net::Telnet   (Timeout => 10,
+				Prompt  => '/[a-z0-9-]+\>\s?$/i',
+				Port    => $port);
+        $t->open ($router);
+        $t->cmd ($pass);
+        $t->cmd("terminal length 0");
+	@result = $t->cmd("show ip bgp $address");
+
+	$n = @result;
+
+	$i = 2;
+	while ( $i < $n ){
+
+		($asnum) = $result[$i] =~ /^[\d\s]*\s(\d+)$/;
+		if ( $asnum ){
+			return $asnum;
+		}
+		$i++;
+	}
+}
+
+$address = $ARGV[0];
+
+open (TPIPE, "$traceroute $address 2>&1 |") || errMsg "Cannot fork for traceroute: [$!]";
+
+while(<TPIPE>){
+	chomp();
+
+#	print "$_\n";
+
+	$row = $_;
+
+	($hop) = $row =~ /^\s?(\d+)\s.*/;
+	$row =~ s/^\s(\d+)\s//;
+
+	if ( $hop && $hop >= 1 && $hop <= 30 ){
+
+		($ip) = $row =~ /.*\s((\d+)\.(\d+)\.(\d+)\.(\d+)).*/;
+		$row =~ s/.*\s((\d+)\.(\d+)\.(\d+)\.(\d+))\s//;
+
+		$row =~ s/ms//g;
+		$_ = $row;
+		($rtt1, $rtt2, $rtt3) = split();
+		if ( $rtt1 && $rtt1 > 0.001 ){ $rtt1 = "$rtt1" . " ms"; }
+		if ( $rtt2 && $rtt2 > 0.001 ){ $rtt2 = "$rtt2" . " ms"; }
+		if ( $rtt3 && $rtt3 > 0.001 ){ $rtt3 = "$rtt3" . " ms"; }
+
+		if ($ip){
+
+			$iaddr = inet_aton("$ip");
+			$name  = gethostbyaddr($iaddr, AF_INET);
+			if ( ! $name ){
+				$name = $ip;
+			}
+
+			$asnum = getasnum("$ip");
+			if ( $asnum && $asnum > 0 && $asnum < 65535 ){
+				$asnum = "[" . "$asnum" . "]";
+			} else {
+				$asnum = "";
+			}
+
+			$ip = "(" . "$ip" . ")";
+
+		} else {
+			$ip = $name = $asnum = "";
+		}
+
+		printf("%2i %s %s %s %s %s %s\n", $hop, $name, $ip, $asnum, $rtt1, $rtt2, $rtt3);
+	}
+}
+

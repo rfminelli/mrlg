@@ -1,0 +1,184 @@
+# This configuration file is actually a Perl script and must be in
+# legal Perl.
+
+## Set the name of the company (you can use legal HTML code)
+$::company = "<A HREF=\"http://www.op-sec.us/\">OP-SEC.US</A>";
+
+## Set the URL for the location of the looking-glass....
+$::url="http://www.op-sec.us/mrlg/";
+
+## The name of the host (to be used by traceroute as a source address)
+$::mrlghost="www.op-sec.us";
+
+## Should we log everything that happens with MRLG?  0=NO, 1=YES
+$::log_queries = 0,
+
+## The location of the logfile for this copy of MRLG
+$::mrlglog="/var/log/mrlg-public.log";
+
+## Set the location of your ping binary.
+$::ping="/usr/local/bin/fastping2.sh";
+
+## Set the location of your traceroute binary for tracing from the LG server.
+$::traceroute="/usr/local/bin/ztr";
+
+## This is where you configure settings to access your router(s)
+##
+## 'server' is the IP address of the router
+##
+## 'login_user' is the login username to use on this router if required.
+##
+## 'login_pass' is the login password to use on this router if required.
+##
+## 'use_port' If set, overrides zebra, bgpd, ospfd, ospf6d and ripd port settings.
+## For example, on a Cisco running SSH, you can specify: use_port => '22',
+##
+## 'zebra' is the port that zebra will answer on (set it to 23 for a Cisco)
+##  or 0 to disable access to the zebra daemon for this router.
+##
+## 'bgpd' is the port that bgpd will answer on (set it to 23 for a Cisco)
+##
+## 'ospfd' is the port that ospfd will answer on (set it to 23 for a Cisco)
+##  or 0 to disable access to the ospfd daemon for this router.
+##
+## 'ospf6d' is the port that ospf6d will answer on (set it to 23 for a Cisco)
+##  or 0 to disable access to the ospfd daemon for this router.
+##
+## 'ripd' is the port that ripd will answer on (set it to 23 for a Cisco)
+##  or 0 to disable access to the ripd daemon for this router.
+##
+## if 'full_tables' is set to "1" for a router, full BGP and IP ROUTE table dumps 
+## will be allowed via the looking glass.
+##
+## This is a BAD thing to do if you have full views on a router.
+## That's why the option is there.
+##
+## 'cisco' identifies the router as a Cisco brand router so we can use the proper
+## prompt parsing.
+##
+## 'use_ssh' if set to '1', MRLG will use SSH to connect to this router.
+##
+## 'debug' if set to '1', MRLG will print debugging information when connecting
+## to this router.
+##
+## 'pass' If set, user must enter this password to access this router via MRLG
+##
+
+
+## Set this to a directory that is writable by your webserver process.
+$::writable_directory = '/var/www';
+
+## Set to 1 to show output before menu.
+$::output_before_menu = 0;
+
+## Set to 1 to enable BGP commands.
+$::bgp = 1;
+
+# Set to 1 to enable IPv6 BGP commands.
+$::bgp_plus =0;
+
+## Set to 1 to enable ping/traceroute commands.
+$::beacon = 1;
+
+## Set to 1 to enable ospf commands.
+$::ospf = 1;
+
+## Set to 1 to enable ospfv6/ospf6 commands.
+$::ospf6 = 0;
+
+# Set to 1 to enable rip commands.
+$::rip = 0;
+
+# Set to 1 to enable sh interface commands.
+$::interfaces = 1;
+
+# Set to 1 to enable sh ip route commands.
+$::ip_route = 1;
+
+# Set to 1 to enable sh ipv6 route commands.
+$::ipv6_route = 0;
+
+# Set to 1 to enable sh multicast commands.
+$::multicast = 1;
+
+# Set to 1 to enable raw "show" commands.
+$::show = 1;
+
+
+## Set the default router.
+$Form{'router'} = "Oregon-IX";
+
+
+#ROUTE SERVERS
+
+
+
+
+$::Routers{'AS7018 ATT'} = {
+	comment => 'OFF-NET RouteServer',
+        server => '12.0.1.28',
+	use_port => '23',
+	full_tables => '0',
+        cisco => '1',
+	debug => "1",
+};
+
+
+$::Routers{'AS3549 GBLX'} = {
+	comment => 'OFF-NET RouteServer',
+        server => '67.17.81.28',
+	use_port => '23',
+	full_tables => '0',
+        cisco => '1',
+	debug => "1",
+};
+
+$::Routers{'AS4323 TWTC'} = {
+	comment => 'OFF-NET RouteServer',
+        server => '66.162.47.58',
+	use_port => '23',
+	full_tables => '0',
+        cisco => '1',
+	debug => "1",
+};
+
+
+$::Routers{'Oregon-IX'} = {
+	comment => 'OFF-NET RouteServer',
+        server => '128.223.51.103',
+	use_port => '23',
+	login_user => 'rviews',
+	full_tables => '0',
+        cisco => '1',
+	debug => '1',
+};
+
+$::Routers{'AS3561 SAVVIS'} = {
+	comment => 'OFF-NET RouteServer',
+        server => '209.1.220.234',
+	use_port => '23',
+	full_tables => '0',
+        cisco => '1',
+	debug => "1",
+};
+
+
+
+
+
+# Add other routers if necessary
+
+
+
+
+
+
+
+
+
+
+
+
+
+# Perl needs it
+1;

@@ -1,0 +1,2 @@
+#!/bin/bash
+/usr/local/bin/ztraceroute $1 2>/dev/null

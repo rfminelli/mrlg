@@ -1,0 +1,67 @@
+#MRLG-5.5.0
+
+* Removed fastping.c - See CVE-2014-3931 at 
+ http://www.s3.eurecom.fr/cve/CVE-2014-3931.txt
+* Removed fping1
+* Replaced fping1 and fastping.c with fastping2.sh (bash shell script)
+
+
+#MRLG-5.4.1
+
+* Added trap for specially crafted regexp entries to prevent the crash of IOS.
+
+# MRLG-5.2.0
+
+* Bug fix in argument parsing to allow IPv6 address notation in ping and traceroute queries.
+
+* Added the ability to log remote queries. (Didn't you always want to know how your looking-glass was being used?)
+
+
+# MRLG-5.1.1
+
+* Updated GNU License information.
+
+* Corrected a few spelling typos.
+
+* Created patch files from 4.3.0 -> 5.1.1 and 5.0.0 -> 5.1.1
+
+
+# MRLG-5.1.0
+
+* Implemented Net::SSH::Perl routines to allow SSH access to routers.
+
+* Added debug routines to code to aid in debugging config file when adding a new router.
+
+* Changed code to set $login_user to 'no_login_user_defined' if 'login_user' is not set in 
+config file. *Change required by SSH routines.
+
+* Changed code to set $login_pass to 'no_login_pass_defined' if 'login_pass' is not set in
+config file. *Change required by SSH routines.
+
+* Cleaned up code to allow easier modification/debugging.
+
+* Added 'use_ssh' config parameter to config file to tell MRLG to use SSH.
+
+* Added 'use_port' config parameter to config file to tell MRLG to use a specific port for
+all connections to a specific router.
+
+* Added 'debug' config parameter to config file to tell MRLG to output debug information for
+a specific router.
+
+* Added $::writable_directory config parameter to config file to tell MRLG where to store the
+known_hosts file that is created by Net::SSH::Perl when an SSH connection is used.
+
+
+
+# MRLG-5.0.0
+* Integrated patch supplied by Jeff Barrow to support username/password authentication for devices
+that require a username to log in.
+
+* Upgraded code to use Net::Telnet::Cisco.
+
+* Added a few <!-- --> tags for Google-bait so I can look and see how many people are running my code. ;)
+  Please leave these in place.  I get a kick out of seeing all of the different networks that use this code.
+
+* More features coming soon - IE; SSH support!
+
+

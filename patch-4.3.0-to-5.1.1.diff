@@ -1,0 +1,750 @@
+*** /home/ftp/looking-glass/old-code-do-not-use/mrlg-4.3.0/archive-contents/index.cgi	2005-01-16 22:29:22.000000000 -0500
+--- index.cgi	2005-01-21 22:10:45.000000000 -0500
+*************** no warnings "once";
+*** 8,13 ****
+  
+! $::Version='4.3.0 Beta (IPv6)';
+  
+! ## 27 NOV 2000
+! ## Copyright (C) 2000 John W. Fraizer III <john.fraizer@enterzone.net>
+  ## *All* copyright notices must remain in place to use this code.
+--- 8,14 ----
+  
+! $::Version='5.1.1 (IPv6+SSH)';
+  
+! ##
+! ## Original Code Release: 27 NOV 2000
+! ## Copyright © 2000 - 2005 John W. Fraizer III <john@ip-guru.com>
+  ## *All* copyright notices must remain in place to use this code.
+*************** $::Version='4.3.0 Beta (IPv6)';
+*** 17,18 ****
+--- 18,22 ----
+  ## The latest version of this code is available at:
++ ##
++ ## ftp://ftp.ip-guru.com/looking-glass/
++ ## or
+  ## ftp://ftp.enterzone.net/looking-glass/
+*************** $::Version='4.3.0 Beta (IPv6)';
+*** 20,38 ****
+  ##
+! ## This file is part of GNU Zebra.
+! ## http://www.zebra.org/
+  ##
+! ## GNU Zebra is free software; you can redistribute it and/or modify it
+! ## under the terms of the GNU General Public License as published by the
+! ## Free Software Foundation; either version 2, or (at your option) any
+! ## later version.
+! ##
+! ## GNU Zebra is distributed in the hope that it will be useful, but
+! ## WITHOUT ANY WARRANTY; without even the implied warranty of
+! ## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+! ## General Public License for more details.
+  ##
+  ## You should have received a copy of the GNU General Public License
+! ## along with GNU Zebra; see the file COPYING.  If not, write to the
+! ## Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+  ## Boston, MA 02111-1307, USA.
+  
+--- 24,50 ----
+  ##
+! ## This file is part of the Multi-Router Looking Glass (MRLG).
+! ##
+! ## Multi-Router Looking Glass (MRLG) is free software; you can redistribute
+! ## it and/or modify it under the terms of the GNU General Public License as
+! ## published by the Free Software Foundation; either version 2, or (at 
+! ## your option) any later version.
+  ##
+! ## Multi-Router Looking Glass (MRLG) is distributed in the hope that it will
+! ## be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+! ## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General 
+! ## Public License for more details.
+  ##
+  ## You should have received a copy of the GNU General Public License
+! ## along with Multi-Router Looking Glass (MRLG); see the file LICENSE.  If not,
+! ## write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+  ## Boston, MA 02111-1307, USA.
++ ##
++ ## Please leave copyright notices in tact.  If for whatever reason, you 
++ ## desire to remove or modify the notices, drop an email to me at the
++ ## email address above.  I might just make an exception for you!  If I find
++ ## your looking-glass running my code without the copyright notice, and I
++ ## haven't given prior permission for you to remove the notice, I'm likely
++ ## to make a huge stink about it in very public places.
++ ##
++ 
+  
+*************** require 5.002;
+*** 40,42 ****
+  use POSIX;
+! use Net::Telnet ();
+  use Net::hostent;
+--- 52,55 ----
+  use POSIX;
+! use Net::Telnet::Cisco;
+! use Net::SSH::Perl;
+  use Net::hostent;
+*************** require '/etc/mrlg.conf';
+*** 47,79 ****
+  
+  # Set default values
+! if (! defined($::bgp)) {
+!     $::bgp = 1;
+! }
+! if (! defined($::bgp_plus)) {
+!     $::bgp_plus = 0;
+! }
+! if (! defined($::multicast)) {
+!     $::multicast = 0;
+! }
+! if (! defined($::ospf)) {
+!     $::ospf = 1;
+! }
+! if (! defined($::ospf_v6)) {
+!     $::ospf_v6 = 0;
+! }
+! if (! defined($::rip)) {
+!     $::rip = 1;
+! }
+! if (! defined($::ip_route)) {
+!     $::ip_route = 1;
+! }
+! if (! defined($::ip6_route)) {
+!     $::ip6_route = 0;
+! }
+! if (! defined($::interfaces)) {
+!     $::interfaces = 1;
+! }
+! if (! defined($::beacon)) {
+!     $::beacon = 1;
+! }
+  
+--- 60,110 ----
+  
++ # Set this to a directory that is writable by your webserver process.
++ $ENV{HOME} = $::writable_directory;
++ 
++ 
++ 
+  # Set default values
+! if (! defined($::bgp)) 		{
+!     				$::bgp = 0;
+! 				}
+! 
+! if (! defined($::bgp_plus)) 	{
+!     				$::bgp_plus = 0;
+! 				}
+! 
+! if (! defined($::multicast)) 	{
+!     				$::multicast = 0;
+! 				}
+! 
+! if (! defined($::ospf)) 	{
+!     				$::ospf = 0;
+! 				}
+! 
+! if (! defined($::ospf_v6)) 	{
+!     				$::ospf_v6 = 0;
+! 				}
+! 
+! if (! defined($::rip)) 		{
+!     				$::rip = 0;
+! 				}
+! 
+! if (! defined($::ripng)) 		{
+!     				$::ripng = 0;
+! 				}
+! 
+! if (! defined($::ip_route)) 	{
+! 				$::ip_route = 0;
+! 				}
+! 
+! if (! defined($::ip6_route)) 	{
+!     				$::ip6_route = 0;
+! 				}
+! 
+! if (! defined($::interfaces)) 	{
+!     				$::interfaces = 0;
+! 				}
+! 
+! if (! defined($::beacon)) 	{
+! 			    	$::beacon = 0;
+! 				}
+  
+*************** $ENV{'PATH'} = "";
+*** 81,83 ****
+  
+! my ($server, $login_pass, $pass, $bgpd, $zebra, $ospfd, $ospf6d, $ripd, $full_tables, $cisco);
+  
+--- 112,114 ----
+  
+! my ($server, $login_pass, $login_user, $pass, $bgpd, $zebra, $ospfd, $ospf6d, $ripd, $ripngd, $full_tables, $cisco, $use_ssh, $debug, $use_port);
+  
+*************** sub set_router
+*** 93,109 ****
+      $server = $::Routers{$::Form{'router'}}{'server'};
+!     if (! $server) {
+! 	die "No 'server' known for router $::Form{'router'}";
+!     }
+!     $login_pass = $::Routers{$::Form{'router'}}{'login_pass'};
+!     if (! $login_pass) {
+! 	die "No 'login_pass' known for router $::Form{'router'}";
+!     }
+      $pass = ($::Routers{$::Form{'router'}}{'pass'} or '');
+!     $bgpd = ($::Routers{$::Form{'router'}}{'bgpd'} or '0');
+!     $zebra = ($::Routers{$::Form{'router'}}{'zebra'} or '0');
+!     $ospfd = ($::Routers{$::Form{'router'}}{'ospfd'} or '0');
+!     $ospf6d = ($::Routers{$::Form{'router'}}{'ospf6d'} or '0');
+!     $ripd = ($::Routers{$::Form{'router'}}{'ripd'} or '0');
+      $full_tables= ($::Routers{$::Form{'router'}}{'full_tables'} or '0');
+      $cisco= ($::Routers{$::Form{'router'}}{'cisco'} or '0');
+      
+--- 124,173 ----
+      $server = $::Routers{$::Form{'router'}}{'server'};
+!     if (! $server) 	{
+! 			die "No 'server' known for router $::Form{'router'}";
+!     			}
+!     $login_user = ($::Routers{$::Form{'router'}}{'login_user'} or 'no_login_user_defined');
+!     
+!     $login_pass = ($::Routers{$::Form{'router'}}{'login_pass'} or 'no_login_pass_defined');
+! 
+      $pass = ($::Routers{$::Form{'router'}}{'pass'} or '');
+! 
+! 
+! 
+!     if ($::Routers{$::Form{'router'}}{'use_port'})	{
+! 			$bgpd = $::Routers{$::Form{'router'}}{'use_port'};
+! 
+! 			$zebra = $::Routers{$::Form{'router'}}{'use_port'};
+! 
+! 			$ospfd = $::Routers{$::Form{'router'}}{'use_port'};
+! 
+! 			$ospf6d = $::Routers{$::Form{'router'}}{'use_port'};
+! 
+! 			$ripd = $::Routers{$::Form{'router'}}{'use_port'};
+! 
+! 			$ripngd = $::Routers{$::Form{'router'}}{'use_port'};
+! 			}
+!     else
+! 			{
+! 
+!     			$bgpd = ($::Routers{$::Form{'router'}}{'bgpd'} or '0');
+! 
+!     			$zebra = ($::Routers{$::Form{'router'}}{'zebra'} or '0');
+! 
+!     			$ospfd = ($::Routers{$::Form{'router'}}{'ospfd'} or '0');
+! 
+!     			$ospf6d = ($::Routers{$::Form{'router'}}{'ospf6d'} or '0');
+! 
+!     			$ripd = ($::Routers{$::Form{'router'}}{'ripd'} or '0');
+! 
+!     			$ripngd = ($::Routers{$::Form{'router'}}{'ripngd'} or '0');
+! 			
+! 			}
+! 
+      $full_tables= ($::Routers{$::Form{'router'}}{'full_tables'} or '0');
++ 
+      $cisco= ($::Routers{$::Form{'router'}}{'cisco'} or '0');
++ 
++     $use_ssh= ($::Routers{$::Form{'router'}}{'use_ssh'} or '0');
++ 
++     $debug= ($::Routers{$::Form{'router'}}{'debug'} or '0');
+      
+*************** print '
+*** 129,134 ****
+  ';
+! #print "<title>Multi-Router Looking Glass $::Version</title>\n";
+! print "<title>$::mrlghost - Looking Glass</title>\n";
+  print '
+  </head>
+  <body bgcolor=white>
+--- 193,201 ----
+  ';
+! print "<title>MRLG - $::mrlghost - Multi-Router Looking Glass</title>\n";
+! print "<!-- DO NOT REMOVE: MRLG-version $::Version -->\n";
+! print "<!-- DO NOT REMOVE: Written by and © 2000-2005, John Fraizer - EnterZone, Inc -->\n";
+! 
+  print '
+  </head>
++ 
+  <body bgcolor=white>
+*************** set_router();
+*** 151,163 ****
+  if ($::Form{'pass1'} eq $::Routers{$::Form{'router'}}{'pass'})
+! {
+! if ($::output_before_menu)  
+! {
+! ## Set up which command is to be executed (and then execute it!)
+! set_command();
+! }
+! }
+  else
+! {
+! print "<font color=red><B>INVALID PASSWORD!</B></font><BR>";
+! }
+  
+--- 218,230 ----
+  if ($::Form{'pass1'} eq $::Routers{$::Form{'router'}}{'pass'})
+! 	{
+! 	if ($::output_before_menu)  
+! 		{
+! 		## Set up which command is to be executed (and then execute it!)
+! 		set_command();
+! 		}
+! 	}
+  else
+! 	{
+! 	print "<font color=red><B>INVALID PASSWORD!</B></font><BR>";
+! 	}
+  
+*************** print "<form METHOD=\"POST\" action=\"$:
+*** 168,186 ****
+  print "<B>Router:</B>  <SELECT Name=\"router\" Size=1>\n";
+! foreach $router (keys (%::Routers)) {
+!     print "<OPTION ";
+!     if ($router eq $::Form{'router'}) {
+! 	print " SELECTED";
+!     }
+!     print " Value=\"$router\">$router";
+!     if ($::Routers{$router}{'comment'}) {
+!         print " - ", $::Routers{$router}{'comment'};
+!     }
+!     print "\n";
+! }
+! if (defined ($::Form{'query'})) {
+!     $old_query = $::Form{'query'};
+! }
+! else {
+!     $old_query = 0;
+! }
+  print "
+--- 235,258 ----
+  print "<B>Router:</B>  <SELECT Name=\"router\" Size=1>\n";
+! foreach $router (keys (%::Routers)) 
+! 	{
+!     	print "<OPTION ";
+!     	if ($router eq $::Form{'router'}) 
+! 		{
+! 		print " SELECTED";
+!     		}
+!     	print " Value=\"$router\">$router";
+!     	if ($::Routers{$router}{'comment'}) 
+! 		{
+!        		print " - ", $::Routers{$router}{'comment'};
+!     		}
+!     	print "\n";
+! 	}
+! 	if (defined ($::Form{'query'})) 
+! 		{
+!     		$old_query = $::Form{'query'};
+! 		}
+! else 
+! 		{
+!     		$old_query = 0;
+! 		}
+  print "
+*************** value=\"$::Form{'pass1'}\"> (if required
+*** 196,230 ****
+  ";
+! if ($::bgp) {
+! print "
+! <input type=radio name=query value=1>show ip bgp<br>
+! <input type=radio name=query value=2>show ip bgp summary<br>
+! ";
+! }
+! if ($::bgp_plus) {
+! print "
+! <input type=radio name=query value=13>show ipv6 bgp<br>
+! <input type=radio name=query value=14>show ipv6 bgp summary<br>
+! ";
+! }
+! if ($::multicast) {
+! print "
+! <input type=radio name=query value=5>show ip bgp ipv4 multicast<br>
+! <input type=radio name=query value=6>show ip bgp ipv4 multicast  summary<br>
+! ";
+! }
+! if ($::ospf) {
+! print "
+! <input type=radio name=query value=10>show ip ospf<br>
+! ";
+! }
+! if ($::ospf6) {
+! print "
+! <input type=radio name=query value=15>show ipv6 ospf6<br>
+! ";
+! }
+! if ($::rip) {
+! print "
+! <input type=radio name=query value=12>show ip rip<br>
+! ";
+! }
+  print "
+--- 268,309 ----
+  ";
+! 
+! if ($::bgp) 		{
+! 			print "
+! 			<input type=radio name=query value=1>show ip bgp<br>
+! 			<input type=radio name=query value=2>show ip bgp summary<br>
+! 			";
+! 			}
+! 
+! if ($::bgp_plus) 	{
+! 			print "
+! 			<input type=radio name=query value=13>show bgp ipv6<br>
+! 			<input type=radio name=query value=14>show bgp ipv6 summary<br>
+! 			";
+! 			}
+! 
+! if ($::multicast) 	{
+! 			print "
+! 			<input type=radio name=query value=5>show ip bgp ipv4 multicast<br>
+! 			<input type=radio name=query value=6>show ip bgp ipv4 multicast  summary<br>
+! 			";
+! 			}
+! 
+! if ($::ospf) 		{
+! 			print "
+! 			<input type=radio name=query value=10>show ip ospf<br>
+! 			";
+! 			}
+! 
+! if ($::ospf6) 		{
+! 			print "
+! 			<input type=radio name=query value=15>show ipv6 ospf<br>
+! 			";
+! 			}
+! 
+! if ($::rip) 		{
+! 			print "
+! 			<input type=radio name=query value=12>show ip rip<br>
+! 			";
+! 			}
+! 
+  print "
+*************** print "
+*** 232,248 ****
+  ";
+! if ($::ip_route) {
+! print "
+! <input type=radio name=query value=3>show ip route<br>
+! ";
+! }
+! if ($::ip6_route) {
+! print "
+! <input type=radio name=query value=16>show ipv6 route<br>
+! ";
+! }
+! if ($::interfaces) {
+! print "
+! <input type=radio name=query value=4>show interface<br>
+! ";
+! }
+  print "
+--- 311,331 ----
+  ";
+! 
+! if ($::ip_route) 	{
+! 			print "
+! 			<input type=radio name=query value=3>show ip route<br>
+! 			";
+! 			}
+! 
+! if ($::ipv6_route) 	{
+! 			print "
+! 			<input type=radio name=query value=16>show ipv6 route<br>
+! 			";
+! 			}
+! 
+! if ($::interfaces) 	{
+! 			print "
+! 			<input type=radio name=query value=4>show interface<br>
+! 			";
+! 			}
+! 
+  print "
+*************** print "
+*** 250,257 ****
+  ";
+! if ($::beacon) {
+! print "
+! <input type=radio name=query value=7>trace<br>
+! <input type=radio name=query value=8>ping<br>
+! ";
+! }
+  print "
+--- 333,342 ----
+  ";
+! 
+! if ($::beacon) 		{
+! 			print "
+! 			<input type=radio name=query value=7>trace<br>
+! 			<input type=radio name=query value=8>ping<br>
+! 			";
+! 			}
+! 
+  print "
+*************** print "
+*** 259,267 ****
+  ";
+! if (defined ($::Form{'arg'})) {
+!     $old_value = $::Form{'arg'};
+! }
+! else {
+!     $old_value = "";
+! }
+! print "<B>Argument:</B> <input type=text name=arg length=20 maxlength=60 value=\"$old_value\"> (many commands require an IP address as argument) \
+  <input type=submit value=Execute></form></font></font>";
+--- 344,355 ----
+  ";
+! 
+! if (defined ($::Form{'arg'})) 	{
+!     				$old_value = $::Form{'arg'};
+! 				}
+! else 
+! 				{
+!     				$old_value = "";
+! 				}
+! print "<B>Argument:</B> <input type=text name=arg length=20 maxlength=60 value=\"$old_value\"> \
+! (many commands require an IP address as argument) \
+  <input type=submit value=Execute></form></font></font>";
+*************** print "<B>Argument:</B> <input type=text
+*** 269,281 ****
+  if ($::Form{'pass1'} eq $::Routers{$::Form{'router'}}{'pass'})
+! {
+! if (! $::output_before_menu)  
+! {
+! ## Set up which command is to be executed (and then execute it!)
+! set_command();
+! }
+! }
+! else
+! {
+! print "<font color=red><B>INVALID PASSWORD!</B></font><BR>";
+! }
+  
+--- 357,369 ----
+  if ($::Form{'pass1'} eq $::Routers{$::Form{'router'}}{'pass'})
+! 	{
+! 	if (! $::output_before_menu)  
+! 		{
+! 		## Set up which command is to be executed (and then execute it!)
+! 		set_command();
+! 		}
+! 	}
+! 	else
+! 	{
+! 	print "<font color=red><B>INVALID PASSWORD!</B></font><BR>";
+! 	}
+  
+*************** print "Multi-Router Looking Glass versio
+*** 294,296 ****
+  print '
+! &copy; 2000-2003, John Fraizer  -
+  <a href="http://www.enterzone.net/">EnterZone, Inc</a><br>
+--- 382,384 ----
+  print '
+! &copy; 2000-2005, John Fraizer  -
+  <a href="http://www.enterzone.net/">EnterZone, Inc</a><br>
+*************** my $command = "show ip bgp $::Form{'arg'
+*** 441,443 ****
+  
+! if ($::Form{'arg'} =~ /n/i)
+          {
+--- 529,531 ----
+  
+! if ($::Form{'arg'} =~ /ne/)
+          {
+*************** sub sh_ip_bgp_plus
+*** 479,481 ****
+  my $port = $bgpd;
+! my $command = "show ipv6 bgp $::Form{'arg'}";
+  if ($bgpd eq '0')
+--- 567,569 ----
+  my $port = $bgpd;
+! my $command = "show bgp ipv6 $::Form{'arg'}";
+  if ($bgpd eq '0')
+*************** if ($::Form{'arg'} eq '')
+*** 490,492 ****
+  		{
+! $command = "show ipv6 bgp";
+  		execute_command($command, $port);
+--- 578,580 ----
+  		{
+! $command = "show bgp ipv6";
+  		execute_command($command, $port);
+*************** else
+*** 532,534 ****
+  	my $port = $bgpd;
+! 	my $command = "show ipv6 bgp summary";
+  	execute_command($command, $port);
+--- 620,622 ----
+  	my $port = $bgpd;
+! 	my $command = "show bgp ipv6 summary";
+  	execute_command($command, $port);
+*************** else
+*** 566,568 ****
+  	my $port = $ospf6d;
+! 	my $command = "show ipv6 ospf6 $::Form{'arg'}";
+  	execute_command($command, $port);
+--- 654,656 ----
+  	my $port = $ospf6d;
+! 	my $command = "show ipv6 ospf $::Form{'arg'}";
+  	execute_command($command, $port);
+*************** sub execute_command
+*** 879,886 ****
+  ##
+- 
+- 
+  {
+- 
+  my ($cmd, $port) = @_;
+- 
+  print "Executing command = $cmd";
+--- 967,970 ----
+*************** my ($prompt, $termlength, $timeout);
+*** 889,902 ****
+  
+- 
+  if ($cisco eq '1')
+          {
+! $prompt='/[\>\#]$/';
+! $termlength='0';
+! $timeout='30';
+          }
+! else
+          {
+! $prompt='/[\>\#] $/';
+! $termlength='0';
+! $timeout='15';
+          }
+--- 973,985 ----
+  
+  if ($cisco eq '1')
+          {
+! 	$prompt='/[\>\#]$/';
+! 	$termlength='0';
+! 	$timeout='30';
+          }
+! 	else
+          {
+! 	$prompt='/[\>\#] $/';
+! 	$termlength='0';
+! 	$timeout='15';
+          }
+*************** $timeout='15';
+*** 904,938 ****
+  
+!   my $t = new Net::Telnet (Timeout => $timeout,
+!                          #Prompt  => '/[\>\#] $/',
+!                          Prompt  => $prompt,
+!                          Port    => $port);
+! 
+! 
+  
+!   $t->open ($server);
+  
+!   $t->cmd ($login_pass);
+  
+! $t->cmd("terminal length $termlength");
+  
+  
+!   if ($cmd)
+!     {
+!       docmd ($t, $cmd);
+!     }
+  
+! }
+  
+- ############################################################
+- sub docmd
+- ############################################################
+- {
+-   my ($t, $cmd) = @_;
+-   my @lines = $t->cmd ($cmd);
+-   print "<pre>\n";
+-   print join('', grep(!/[\>\#] $/, @lines)),"\n";
+-   print "</pre>";
+  }
+- 
+- 
+  ### The end.  Now, isn't that special?! ###
+--- 987,1064 ----
+  
+! if ($use_ssh eq '1')
+! 	{
+! 	if ($debug eq '1')
+! 		{
+! 		print "<br><br>DEBUG: Protocol = SSH\n";
+! 		print "<br>DEBUG: Server = $server\n";
+! 		if ($::Routers{$::Form{'router'}}{'use_port'})
+! 			{
+! 			print "<br>DEBUG: use_port is SET";
+! 			}
+! 		else
+! 			{
+! 			print "<br>DEBUG: use_port is UNSET";
+! 			}
+! 		print "<br>DEBUG: Port = $port\n";
+! 		print "<br>DEBUG: login_user = $login_user\n";
+! 		print "<br>DEBUG: login_pass = $login_pass<br>\n";
+! 		}
+  
+! 	my $ssh = Net::SSH::Perl->new($server,
+! 					Prompt => $prompt,
+! 					Port => $port,
+! 					Timeout => $timeout);
+  
+! 	$ssh->login($login_user, $login_pass);
+  
+! 	$ssh->cmd("terminal length $termlength");
+  
++ 	if ($cmd)
++ 		{
++ 		my @output = $ssh->cmd($cmd);
++ 		print "<pre>\n";
++ 		print @output;
++ 		print "</pre>\n";
++ 		}
++ 	}
++ else
++ 	{
++ 	if ($debug eq '1')
++ 		{
++ 		print "<br><br>DEBUG: Protocol = TELNET\n";
++ 		print "<br>DEBUG: Server = $server\n";
++ 		if ($::Routers{$::Form{'router'}}{'use_port'})
++ 			{
++ 			print "<br>DEBUG: use_port is SET";
++ 			}
++ 		else
++ 			{
++ 			print "<br>DEBUG: use_port is UNSET";
++ 			}
++ 		print "<br>DEBUG: Port = $port\n";
++ 		print "<br>DEBUG: login_user = $login_user\n";
++ 		print "<br>DEBUG: login_pass = $login_pass<br>\n";
++ 		}
++ 	my $telnet = Net::Telnet::Cisco->new(
++ 					Host => $server,
++ 					Port => $port,
++ 					Prompt => $prompt,
++ 					Timeout => $timeout);
++ 
++ 	$telnet->login(
++ 			Name => $login_user,
++ 			Password => $login_pass);
+  
+! 	$telnet->cmd("terminal length $termlength");
+  
+! 	if ($cmd)
+! 		{
+! 		my @output = $telnet->cmd($cmd);
+! 		print "<pre>\n";
+! 		print @output;
+! 		print "</pre>\n";
+! 		}
+! 	}
+  
+  }
+  ### The end.  Now, isn't that special?! ###

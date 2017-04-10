@@ -1,0 +1,432 @@
+diff -c1 mrlg-5.4.1/Changelog mrlg-5.5.0/Changelog
+*** mrlg-5.4.1/Changelog	2014-09-27 00:07:10.021359938 -0400
+--- mrlg-5.5.0/Changelog	2014-09-26 23:10:49.397359942 -0400
+***************
+*** 1 ****
+--- 1,9 ----
++ #MRLG-5.5.0
++ 
++ * Removed fastping.c - See CVE-2014-3931 at 
++  http://www.s3.eurecom.fr/cve/CVE-2014-3931.txt
++ * Removed fping1
++ * Replaced fping1 and fastping.c with fastping2.sh (bash shell script)
++ 
++ 
+  #MRLG-5.4.1
+diff -c1 mrlg-5.4.1/DESCRIPTION mrlg-5.5.0/DESCRIPTION
+*** mrlg-5.4.1/DESCRIPTION	2014-09-27 00:07:13.785359928 -0400
+--- mrlg-5.5.0/DESCRIPTION	2014-09-26 23:19:33.773359922 -0400
+***************
+*** 1,9 ****
+  
+  
+  
+! Multi-Router Looking Glass Version 5.4.1 
+! Thu Aug 30 20:10:16 GMT 2007
+! 
+! Multi-Router Looking Glass allows network administrators to execute commands on multiple
+! routers via a nice web interface.
+  
+--- 1,13 ----
+  
++ Multi-Router Looking Glass Version 5.5.0 
++ Sat Sep 27 03:16:28 UTC 2014
+  
++ Multi-Router Looking Glass allows network administrators to execute 
++ commands on multiple routers via a nice web interface.
+  
+! Changes for 5.5.0
+! Removed fastping.c - See CVE-2014-3931 at 
+! http://www.s3.eurecom.fr/cve/CVE-2014-3931.txt
+! Removed fping1
+! Replaced fping1 and fastping.c with fastping2.sh (bash shell script)
+  
+***************
+*** 15,19 ****
+  
+! * Bug fix in argument parsing to allow IPv6 address notation in ping and traceroute queries.
+  
+! * Added the ability to log remote queries. (Didn't you always want to know how your looking-glass was being used?)
+  
+--- 19,25 ----
+  
+! * Bug fix in argument parsing to allow IPv6 address notation in ping and 
+! traceroute queries.
+  
+! * Added the ability to log remote queries. (Didn't you always want to 
+! know how your looking-glass was being used?)
+  
+***************
+*** 32,40 ****
+  
+! * Added debug routines to code to aid in debugging config file when adding a new router.
+! 
+! * Changed code to set $login_user to 'no_login_user_defined' if 'login_user' is not set in
+! config file. *Change required by SSH routines.
+  
+! * Changed code to set $login_pass to 'no_login_pass_defined' if 'login_pass' is not set in
+! config file. *Change required by SSH routines.
+  
+--- 38,49 ----
+  
+! * Added debug routines to code to aid in debugging config file when 
+! adding a new router.
+  
+! * Changed code to set $login_user to 'no_login_user_defined' if 
+! 'login_user' is not set in config file. *Change required by SSH 
+! routines.
+! 
+! * Changed code to set $login_pass to 'no_login_pass_defined' if 
+! 'login_pass' is not set in config file. *Change required by SSH 
+! routines.
+  
+***************
+*** 44,53 ****
+  
+! * Added 'use_port' config parameter to config file to tell MRLG to use a specific port for
+! all connections to a specific router.
+  
+! * Added 'debug' config parameter to config file to tell MRLG to output debug information for
+! a specific router.
+  
+! * Added $::writable_directory config parameter to config file to tell MRLG where to store the
+! known_hosts file that is created by Net::SSH::Perl when an SSH connection is used.
+  
+--- 53,63 ----
+  
+! * Added 'use_port' config parameter to config file to tell MRLG to use a 
+! specific port for all connections to a specific router.
+  
+! * Added 'debug' config parameter to config file to tell MRLG to output 
+! debug information for a specific router.
+  
+! * Added $::writable_directory config parameter to config file to tell 
+! MRLG where to store the known_hosts file that is created by 
+! Net::SSH::Perl when an SSH connection is used.
+  
+***************
+*** 56,59 ****
+  
+! * Integrated patch supplied by Jeff Barrow to support username/password authentication for devices
+! that require a username to log in.
+  
+--- 66,69 ----
+  
+! * Integrated patch supplied by Jeff Barrow to support username/password 
+! authentication for devices that require a username to log in.
+  
+***************
+*** 61,63 ****
+  
+! * Added a few <!-- --> tags for Google-bait so I can look and see how many people are running my code. ;)
+    Please leave these in place.  I get a kick out of seeing all of the different networks that use this code.
+--- 71,74 ----
+  
+! * Added a few <!-- --> tags for Google-bait so I can look and see how 
+! many people are running my code. ;)
+    Please leave these in place.  I get a kick out of seeing all of the different networks that use this code.
+***************
+*** 69,72 ****
+  
+! Removed the ability of remote users to specify "nei" or any other variation of "neighbors" 
+! as an ARG to the "sh ip bgp" command.
+  
+--- 80,83 ----
+  
+! Removed the ability of remote users to specify "nei" or any other 
+! variation of "neighbors" as an ARG to the "sh ip bgp" command.
+  
+***************
+*** 92,107 ****
+  
+! You can assign unique password for each router.  Users of the MRLG must then enter the
+! proper password to access that router via the MRLG.
+  
+! * Seperate config file:
+! Version 4.2.1 implements mrlg.conf which contains all router access information.  This file
+! is placed outside of your webserver root for higher security.
+! ************
+! Many thanks to Stephane Bortzmeyer for modifying the MRLG to support a
+! config file!
+! ************
+  
+  
+! MRLG is modular.  Administrators can add or remove commands from the MRLG to fit their
+! individual needs.
+  
+--- 103,116 ----
+  
+! You can assign unique password for each router.  Users of the MRLG must 
+! then enter the proper password to access that router via the MRLG.
+  
+! * Seperate config file: 
+! Version 4.2.1 implements mrlg.conf which contains all router access 
+! information.  This file is placed outside of your webserver root for 
+! higher security. ************ Many thanks to Stephane Bortzmeyer for 
+! modifying the MRLG to support a config file! ************
+  
+  
+! MRLG is modular.  Administrators can add or remove commands from the 
+! MRLG to fit their individual needs.
+  
+***************
+*** 112,126 ****
+  Zebra (0.88 and above) 
+! 
+! 
+  
+  As always, the latest version of the MRLG can be downloaded from
+! http://www.op-sec.us/mrlg/source/
+  
+  
+! If you use MRLG, please let me know and preferrably, provide me a link to your looking-glass
+! in an email to mrlg@op-sec.us.
+  
+  
+! If you would like to show your appreciation for MRLG, you can do so by sending a donation
+! via Paypal to mrlg@op-sec.us.
+  
+--- 121,134 ----
+  Zebra (0.88 and above) 
+! Quagga (all versions since fork from Zebra)
+  
+  As always, the latest version of the MRLG can be downloaded from
+! http://mrlg.op-sec.us/
+  
+  
+! If you use MRLG, please let me know and preferrably, provide me a link 
+! to your looking-glass in an email to mrlg@op-sec.us.
+  
+  
+! If you would like to show your appreciation for MRLG, you can do so by 
+! sending a donation via Paypal to mrlg@op-sec.us.
+  
+Only in mrlg-5.5.0/: fastping2.sh
+Only in mrlg-5.4.1/: fastping.c
+Only in mrlg-5.4.1/: fping1
+diff -c1 mrlg-5.4.1/index.cgi mrlg-5.5.0/index.cgi
+*** mrlg-5.4.1/index.cgi	2014-09-27 00:07:15.337359933 -0400
+--- mrlg-5.5.0/index.cgi	2014-09-27 00:10:48.605359936 -0400
+***************
+*** 8,10 ****
+  
+! $::Version='5.4.1 Beta (IPv6+SSH)';
+  
+--- 8,10 ----
+  
+! $::Version='5.5.0 (IPv6+SSH)';
+  
+***************
+*** 12,14 ****
+  ## Original Code Release: 27 NOV 2000
+! ## Copyright © 2000 - 2007 John W. Fraizer III <john@op-sec.us>
+  ## *All* copyright notices must remain in place to use this code.
+--- 12,14 ----
+  ## Original Code Release: 27 NOV 2000
+! ## Copyright © 2000 - 2014 John W. Fraizer III <john@op-sec.us>
+  ## *All* copyright notices must remain in place to use this code.
+***************
+*** 19,21 ****
+  ##
+! ## http://www.op-sec.us/mrlg/source/
+  ##
+--- 19,21 ----
+  ##
+! ## http://mrlg.op-sec.us/
+  ##
+***************
+*** 192,194 ****
+  print "<!-- DO NOT REMOVE: MRLG-version $::Version -->\n";
+! print "<!-- DO NOT REMOVE: Written by and © 2000-2007, John Fraizer -->\n";
+  
+--- 192,194 ----
+  print "<!-- DO NOT REMOVE: MRLG-version $::Version -->\n";
+! print "<!-- DO NOT REMOVE: Written by and © 2000-2014, John Fraizer -->\n";
+  
+***************
+*** 380,384 ****
+  print '
+! &copy; 2000-2007, John Fraizer  -
+! OP-SEC.US<br>
+! Source code: <a href=http://www.op-sec.us/mrlg/source/>http://www.op-sec.us/mrlg/source/</a>.	
+  <br>
+--- 380,384 ----
+  print '
+! &copy; 2000-2014, John Fraizer  -
+! <a href=http://www.op-sec.us/>OP-SEC.US</a><br>
+! Source code: <a href=http://mrlg.op-sec.us/>http://mrlg.op-sec.us/</a>.	
+  <br>
+***************
+*** 890,892 ****
+                          print "Ping from $::mrlghost.<br> \n\n";
+! 			print "Executing command = fastping -c 100 -s 100 $target\n\n";
+  
+--- 890,892 ----
+                          print "Ping from $::mrlghost.<br> \n\n";
+! 			print "Executing command = fastping2 100 100 $target\n\n";
+  
+***************
+*** 899,901 ****
+  
+! 			open(PING,"|$::ping $target -c 100");
+  			print <PING>;
+--- 899,901 ----
+  
+! 			open(PING,"|$::ping 100 100 $target");
+  			print <PING>;
+diff -c1 mrlg-5.4.1/INSTALL mrlg-5.5.0/INSTALL
+*** mrlg-5.4.1/INSTALL	2014-09-27 00:07:15.989359936 -0400
+--- mrlg-5.5.0/INSTALL	2014-09-26 23:16:02.389359936 -0400
+***************
+*** 2,15 ****
+  
+! - at least one IP router with interesting things to show to the world
+! (or to your local network). MRLG is known to work with Cisco, Quagga, Zebra,
+! and Marconi/Fore Systems routers.  You should be able to modify it to obtain
+! information from any device that has a telnet console.
+! 
+! - a Web server with Perl and Net::Telnet::Cisco.  You can get Net::Telnet::Cisco from 
+! http://www.cpan.org/  Previous versions of MRLG used Net::Telnet so, if you're upgrading,
+! make sure you have Net::Telnet::Cisco installed.  If you are going to be using SSH to connect
+! to any of your routers, you'll also need Net::SSH::Perl, also available from CPAN.
+! 
+! For whatever reason, I had to make the following change in Perl.pm of the Net::SSH::Perl
+! module to force it to use ports above 1024 to make connections.
+  
+--- 2,18 ----
+  
+! - at least one IP router with interesting things to show to the world 
+! (or to your local network). MRLG is known to work with Cisco, Quagga, 
+! Zebra, and Marconi/Fore Systems routers.  You should be able to modify 
+! it to obtain information from any device that has a telnet console.
+! 
+! - a Web server with Perl and Net::Telnet::Cisco.  You can get 
+! Net::Telnet::Cisco from http://www.cpan.org/ Previous versions of MRLG 
+! used Net::Telnet so, if you're upgrading, make sure you have 
+! Net::Telnet::Cisco installed.  If you are going to be using SSH to 
+! connect to any of your routers, you'll also need Net::SSH::Perl, also 
+! available from CPAN.
+! 
+! For whatever reason, I had to make the following change in Perl.pm of 
+! the Net::SSH::Perl module to force it to use ports above 1024 to make 
+! connections.
+  
+***************
+*** 45,62 ****
+  
+! - make fastping
+! 
+! - copy fping1, fastping, ztr and ztraceroute to /usr/local/bin/
+  
+! - chmod +x fping1, fastping, ztr and ztraceroute
+  
+! - change the ownership of fastping to root and cmmod u+s
+  
+! - possibly edit fping1, fastping, ztr ato set the proper path to perl and
+! bash on your system.
+  
+! - possibly edit ztraceroute to set and the address, port and password of the router that
+! will be used and set the path to perl and traceroute on your system.
+! 
+! - create a directory that is writable by your webserver process. (This is used by Net::SSH::Perl
+! to store the known_hosts file.)  Example:
+  
+--- 48,62 ----
+  
+! - copy fastping2.sh, ztr and ztraceroute to /usr/local/bin/
+  
+! - chmod +x fastping2.sh, ztr and ztraceroute
+  
+! - possibly edit fastping2.sh, ztr to set the proper path to perl, bash 
+! and ping on your system.
+  
+! - possibly edit ztraceroute to set and the address, port and password of 
+! the router that will be used and set the path to perl and traceroute on 
+! your system.
+  
+! - create a directory that is writable by your webserver process. (This 
+! is used by Net::SSH::Perl to store the known_hosts file.)  Example:
+  
+***************
+*** 72,80 ****
+  mrlg.conf	= The config file for MRLG
+! fping1		= bash script to parse output of fastping for use with MRLG
+! fastping.c	= C source code for fastping
+! ztr		= bash script to execute ztraceroute routing errors to /dev/null
+! 		  This was necessary on my systems.  It may not be on yours.
+! 		  It doesn't hurt anything to use it.
+! ztraceroute	= Perl script that provides live routing information for hops in a
+! 		  traceroute.  This produces the same traceroute output as a Cisco.
+  
+--- 72,82 ----
+  mrlg.conf	= The config file for MRLG
+! fastping2.sh	= bash script that emulates Cisco PING output and provides
+!                   fast ping execution.
+! 
+! ztr		 = bash script to execute ztraceroute routing errors to 
+! 		  /dev/null This was necessary on my systems.  It may not be 
+! 		  on yours. It doesn't hurt anything to use it.
+! ztraceroute	= Perl script that provides live routing information for hops 
+!                   in a traceroute.  This produces the same traceroute output 
+!                   as a Cisco.
+  
+***************
+*** 82,91 ****
+  As always, the latest version of the MRLG can be downloaded from
+! http://www.op-sec.us/mrlg/source/
+  
+! If you use MRLG, please let me know and preferrably, provide me a link to your looking-glass
+! in an email to mrlg@op-sec.us.
+  
+  
+! If you would like to show your appreciation for MRLG, you can do so by sending a donation
+! via Paypal to mrlg@op-sec.us.
+  
+--- 84,93 ----
+  As always, the latest version of the MRLG can be downloaded from
+! http://mrlg.op-sec.us/
+  
+! If you use MRLG, please let me know and preferrably, provide me a link 
+! to your looking-glass in an email to mrlg@op-sec.us.
+  
+  
+! If you would like to show your appreciation for MRLG, you can do so by 
+! sending a donation via Paypal to mrlg@op-sec.us.
+  
+diff -c1 mrlg-5.4.1/Makefile mrlg-5.5.0/Makefile
+*** mrlg-5.4.1/Makefile	2014-09-27 00:07:16.629359935 -0400
+--- mrlg-5.5.0/Makefile	2014-09-26 23:09:39.217359936 -0400
+***************
+*** 1,4 ****
+  PROGRAM=mrlg
+! VERSION=5.1.0
+! DISTRIB=DESCRIPTION LICENSE INSTALL Makefile fastping.c fping1 ztr ztraceroute index.cgi mrlg.conf.sample 
+  
+--- 1,4 ----
+  PROGRAM=mrlg
+! VERSION=5.5.0
+! DISTRIB=DESCRIPTION LICENSE INSTALL Makefile fastping2 ztr ztraceroute index.cgi mrlg.conf.sample 
+  
+diff -c1 mrlg-5.4.1/mrlg.conf.sample mrlg-5.5.0/mrlg.conf.sample
+*** mrlg-5.4.1/mrlg.conf.sample	2014-09-27 00:07:17.249359936 -0400
+--- mrlg-5.5.0/mrlg.conf.sample	2014-09-26 23:10:02.785359870 -0400
+***************
+*** 19,21 ****
+  ## Set the location of your ping binary.
+! $::ping="/usr/local/bin/fping1";
+  
+--- 19,21 ----
+  ## Set the location of your ping binary.
+! $::ping="/usr/local/bin/fastping2.sh";
+  
+Only in mrlg-5.5.0/: patch-5.4.1-to-5.5.0.diff
+diff -c1 mrlg-5.4.1/README.1ST mrlg-5.5.0/README.1ST
+*** mrlg-5.4.1/README.1ST	2014-09-27 00:07:18.089359915 -0400
+--- mrlg-5.5.0/README.1ST	2014-09-26 23:20:40.397359936 -0400
+***************
+*** 1,2 ****
+! Grab the mrlg-5.4.0.tgz file.... It has EVERYTHING you need in it.
+  
+--- 1,2 ----
+! Grab the mrlg-5.5.0.tgz file.... It has EVERYTHING you need in it.
+  
